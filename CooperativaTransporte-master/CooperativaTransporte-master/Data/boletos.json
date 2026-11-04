@@ -1,0 +1,58 @@
+[
+  {
+    "IdBoleto": "B-001",
+    "IdViaje": "V-UIO-01",
+    "Pasajero": {
+      "Cedula": "1002345678",
+      "Nombre": "Andres Benavides",
+      "TipoDescuento": "NINGUNO"
+    },
+    "NumeroAsiento": 1,
+    "PrecioFinal": 4.00,
+    "FechaEmision": "2026-11-03T08:00:00",
+    "Estado": "ACTIVO",
+    "FechaAnulacion": null
+  },
+  {
+    "IdBoleto": "B-002",
+    "IdViaje": "V-UIO-01",
+    "Pasajero": {
+      "Cedula": "1009876543",
+      "Nombre": "Rosa Imbaquingo",
+      "TipoDescuento": "TERCERA_EDAD"
+    },
+    "NumeroAsiento": 2,
+    "PrecioFinal": 2.00,
+    "FechaEmision": "2026-11-03T08:15:00",
+    "Estado": "ACTIVO",
+    "FechaAnulacion": null
+  },
+  {
+    "IdBoleto": "B-003",
+    "IdViaje": "V-TUL-02",
+    "Pasajero": {
+      "Cedula": "1003334445",
+      "Nombre": "Carlos Cazar",
+      "TipoDescuento": "DISCAPACIDAD"
+    },
+    "NumeroAsiento": 3,
+    "PrecioFinal": 1.28,
+    "FechaEmision": "2026-11-03T08:30:00",
+    "Estado": "ACTIVO",
+    "FechaAnulacion": null
+  },
+  {
+    "IdBoleto": "B-004",
+    "IdViaje": "V-OTV-03",
+    "Pasajero": {
+      "Cedula": "1007778889",
+      "Nombre": "Elena Morales",
+      "TipoDescuento": "NINGUNO"
+    },
+    "NumeroAsiento": 1,
+    "PrecioFinal": 1.00,
+    "FechaEmision": "2026-11-02T10:00:00",
+    "Estado": "ANULADO",
+    "FechaAnulacion": "2026-11-02T16:00:00"
+  }
+]

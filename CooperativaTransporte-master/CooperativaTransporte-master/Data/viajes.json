@@ -1,0 +1,34 @@
+[
+  {
+    "IdViaje": "V-UIO-01",
+    "Ruta": "Ibarra-Quito",
+    "FechaHora": "2026-11-04T12:00:00",
+    "Capacidad": 10,
+    "TarifaBase": 4.00,
+    "EsDirecto": true,
+    "AsientosOcupados": {
+      "1": "1002345678",
+      "2": "1009876543"
+    }
+  },
+  {
+    "IdViaje": "V-TUL-02",
+    "Ruta": "Ibarra-Tulcan",
+    "FechaHora": "2026-11-04T15:00:00",
+    "Capacidad": 8,
+    "TarifaBase": 3.00,
+    "EsDirecto": false,
+    "AsientosOcupados": {
+      "3": "1003334445"
+    }
+  },
+  {
+    "IdViaje": "V-OTV-03",
+    "Ruta": "Ibarra-Otavalo",
+    "FechaHora": "2026-11-04T07:30:00",
+    "Capacidad": 6,
+    "TarifaBase": 1.00,
+    "EsDirecto": true,
+    "AsientosOcupados": {}
+  }
+]
