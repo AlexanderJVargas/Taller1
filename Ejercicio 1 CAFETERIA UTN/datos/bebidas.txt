@@ -1,0 +1,3 @@
+BEB001;Agua 500 ml;0.6;23
+BEB002;Gaseosa cola;0.8;28
+BEB003;Jugo de naranja;1.2;16

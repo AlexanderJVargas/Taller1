@@ -1,0 +1,3 @@
+# Mantiene los saltos de linea correctos de los lanzadores en cualquier sistema
+*.sh  text eol=lf
+*.bat text eol=crlf

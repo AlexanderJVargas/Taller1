@@ -1,0 +1,6 @@
+ING001;Arroz;kg;1.2;25.8;5.0
+ING002;Pollo;kg;4.5;9.4;10.0
+ING003;Tomate;kg;1.8;13.0;4.0
+ING004;Cebolla;kg;1.0;6.66;3.0
+ING005;Aceite;l;3.0;3.32;3.5
+ING006;Papa;kg;0.8;16.1;8.0
