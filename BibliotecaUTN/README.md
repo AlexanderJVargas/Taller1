@@ -2,15 +2,37 @@
 
 Aplicacion de consola en Java (17 o superior) para controlar los prestamos de libros y revistas.
 
-## Ejecutar
-Requisitos: Java 17 o superior y una base PostgreSQL, en la nube (Neon) o local.
+## Como iniciar el programa
+El programa arranca desde la clase **`src/biblioteca/App.java`** (metodo `main`).
 
-- Windows: doble clic en `ejecutar.bat`
-- Manual:
-  ```
-  javac --release 17 -encoding UTF-8 -d out src/biblioteca/*.java src/biblioteca/*/*.java
-  java -cp "out;lib\postgresql-42.7.12.jar" biblioteca.App
-  ```
+Requisitos: Java 17 o superior (JDK) y una base PostgreSQL, en la nube (Neon) o local.
+
+### Paso previo (una sola vez)
+Copie `db.properties.example` como `db.properties` y complete la conexion a la base
+(ver la seccion "Base de datos"). Sin ese archivo el programa no puede conectarse.
+
+### Opcion 1: desde App.java en VS Code (recomendado)
+1. Abra en VS Code la carpeta `BibliotecaUTN` (la que contiene `src`, `lib` y `db.properties`).
+   Necesita la extension "Extension Pack for Java".
+2. Abra `src/biblioteca/App.java`.
+3. Pulse **Run** sobre el metodo `main` (o F5 y elija "Biblioteca UTN").
+4. El menu aparece en la **terminal** de VS Code; escriba ahi las opciones.
+
+La carpeta `.vscode` ya configura el driver `lib/postgresql-42.7.12.jar` y la terminal para el menu.
+En IntelliJ IDEA o NetBeans: agregue `lib/postgresql-42.7.12.jar` como libreria del proyecto,
+marque `src` como carpeta de fuentes, use la carpeta `BibliotecaUTN` como directorio de trabajo
+y ejecute `biblioteca.App`.
+
+### Opcion 2: ejecutar.bat (Windows)
+Doble clic en `ejecutar.bat`: compila el codigo y abre el menu. Avisa si falta Java o `db.properties`.
+
+### Opcion 3: desde la consola
+Dentro de la carpeta `BibliotecaUTN`:
+```
+javac --release 17 -encoding UTF-8 -d out src/biblioteca/*.java src/biblioteca/modelo/*.java src/biblioteca/persistencia/*.java src/biblioteca/servicio/*.java src/biblioteca/ui/*.java
+java -cp "out;lib/postgresql-42.7.12.jar" biblioteca.App
+```
+En Linux o macOS use `:` en lugar de `;` en el `-cp`.
 
 ## Base de datos (PostgreSQL)
 Los datos se guardan en PostgreSQL. La base principal esta en la nube, en Neon (neon.tech), asi

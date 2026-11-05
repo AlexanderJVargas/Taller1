@@ -22,8 +22,9 @@ public class App {
 
     public static void main(String[] args) {
         Locale.setDefault(Locale.US); // decimales con punto: 0.25
+        Path base = carpetaDelProyecto();
         try {
-            ConexionBD bd = new ConexionBD(Path.of("db.properties"));
+            ConexionBD bd = new ConexionBD(base.resolve("db.properties"));
             System.out.println("Conectando a " + bd.descripcion() + " ...");
             bd.crearEsquema();
 
@@ -31,7 +32,7 @@ public class App {
             UsuarioRepositorio usuarioRepo = new UsuarioRepositorio(bd);
             PrestamoRepositorio prestamoRepo = new PrestamoRepositorio(bd);
 
-            if (bd.estaVacia()) importarCsv(Path.of("datos"), materialRepo, usuarioRepo, prestamoRepo);
+            if (bd.estaVacia()) importarCsv(base.resolve("datos"), materialRepo, usuarioRepo, prestamoRepo);
 
             Biblioteca biblioteca = new Biblioteca(materialRepo, usuarioRepo, prestamoRepo);
             new MenuPrincipal(biblioteca, new Consola()).iniciar();
@@ -55,6 +56,19 @@ public class App {
         materialRepo.guardarTodos(new MaterialCsv(carpeta.resolve("materiales.csv")).cargar());
         prestamoRepo.guardarTodos(new PrestamoCsv(carpeta.resolve("prestamos.csv")).cargar());
         System.out.println("Base de datos vacia: se importaron los datos de la carpeta " + carpeta + ".");
+    }
+
+    /**
+     * Carpeta donde estan db.properties y datos/. Normalmente es la carpeta actual; si se ejecuta
+     * desde un IDE abierto en la carpeta del repositorio del grupo, se usa la subcarpeta BibliotecaUTN.
+     */
+    private static Path carpetaDelProyecto() {
+        Path actual = Path.of("");
+        if (Files.exists(actual.resolve("db.properties")) || Files.isDirectory(actual.resolve("src/biblioteca"))) {
+            return actual;
+        }
+        Path subcarpeta = actual.resolve("BibliotecaUTN");
+        return Files.isDirectory(subcarpeta) ? subcarpeta : actual;
     }
 
     private static void salir(String mensaje) {
