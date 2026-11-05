@@ -24,6 +24,7 @@ public class App {
         Locale.setDefault(Locale.US); // decimales con punto: 0.25
         try {
             ConexionBD bd = new ConexionBD(Path.of("db.properties"));
+            System.out.println("Conectando a " + bd.descripcion() + " ...");
             bd.crearEsquema();
 
             MaterialRepositorio materialRepo = new MaterialRepositorio(bd);
@@ -35,7 +36,9 @@ public class App {
             Biblioteca biblioteca = new Biblioteca(materialRepo, usuarioRepo, prestamoRepo);
             new MenuPrincipal(biblioteca, new Consola()).iniciar();
         } catch (IOException e) {
-            salir("No se pudo leer db.properties o importar los datos: " + e.getMessage());
+            salir("No se pudo leer la configuracion o importar los datos: " + e.getMessage()
+                    + "\nCree db.properties a partir de db.properties.example o defina la variable "
+                    + ConexionBD.VARIABLE_ENTORNO + ".");
         } catch (SQLException e) {
             salir("No se pudo conectar a PostgreSQL: " + e.getMessage()
                     + "\nRevise que el servidor este encendido y los datos de db.properties.");

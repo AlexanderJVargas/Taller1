@@ -3,7 +3,7 @@
 Aplicacion de consola en Java (17 o superior) para controlar los prestamos de libros y revistas.
 
 ## Ejecutar
-Requisitos: Java 17 o superior y PostgreSQL con una base llamada `Biblio`.
+Requisitos: Java 17 o superior y una base PostgreSQL, en la nube (Neon) o local.
 
 - Windows: doble clic en `ejecutar.bat`
 - Manual:
@@ -13,9 +13,12 @@ Requisitos: Java 17 o superior y PostgreSQL con una base llamada `Biblio`.
   ```
 
 ## Base de datos (PostgreSQL)
-Los datos se guardan en la base `Biblio` de PostgreSQL (la que se administra con pgAdmin).
-- `db.properties`: url, usuario y contrasena de la conexion. No se sube al repositorio:
-  copie `db.properties.example` como `db.properties` y ponga su contrasena.
+Los datos se guardan en PostgreSQL. La base principal esta en la nube, en Neon (neon.tech), asi
+que la aplicacion funciona desde cualquier computadora con internet. Tambien puede usarse una base local.
+- `db.properties`: datos de la conexion. No se sube al repositorio: copie `db.properties.example`
+  como `db.properties` y pegue la cadena de conexion de Neon
+  (`url=postgresql://usuario:contrasena@host/neondb?sslmode=require`).
+- Variable de entorno `BIBLIO_DB_URL`: si existe, se usa en lugar de `db.properties`.
 - `lib/postgresql-42.7.12.jar`: driver JDBC.
 - `sql/biblio.sql`: esquema (tablas `usuario`, `material`, `prestamo`). La aplicacion crea las
   tablas sola al iniciar si no existen.
