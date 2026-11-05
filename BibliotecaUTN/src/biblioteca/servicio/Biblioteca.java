@@ -181,9 +181,16 @@ public class Biblioteca {
         return prestamo;
     }
 
-    /** Registra la devolucion; si hay retraso genera la multa. */
-    public Prestamo devolver(long numero, LocalDate fecha) throws BibliotecaException {
+    /**
+     * Registra la devolucion de un prestamo del usuario indicado; si hay retraso genera la multa.
+     * Un prestamo no se puede devolver dos veces ni a nombre de otro usuario.
+     */
+    public Prestamo devolver(String cedula, long numero, LocalDate fecha) throws BibliotecaException {
+        Usuario usuario = obtenerUsuario(cedula);
         Prestamo prestamo = obtenerPrestamo(numero);
+        if (!prestamo.getCedulaUsuario().equals(usuario.getCedula())) {
+            throw new BibliotecaException("El prestamo #" + numero + " no pertenece a " + usuario.getNombre() + ".");
+        }
         Material material = materiales.get(prestamo.getCodigoMaterial());
         try {
             prestamo.devolver(fecha, material);
@@ -191,7 +198,7 @@ public class Biblioteca {
             throw new BibliotecaException(e.getMessage());
         }
         material.devolverEjemplar();
-        guardarPrestamos();
+        guardarPrestamosOVolverAtras();
         return prestamo;
     }
 
@@ -202,7 +209,21 @@ public class Biblioteca {
         } catch (IllegalStateException e) {
             throw new BibliotecaException(e.getMessage());
         }
-        guardarPrestamos();
+        guardarPrestamosOVolverAtras();
+    }
+
+    /** Guarda los prestamos; si falla, vuelve a leer la base para que la memoria no quede distinta. */
+    private void guardarPrestamosOVolverAtras() throws BibliotecaException {
+        try {
+            guardarPrestamos();
+        } catch (BibliotecaException e) {
+            materiales.clear();
+            usuarios.clear();
+            prestamos.clear();
+            ultimoNumero = 0;
+            cargarDatos();
+            throw e;
+        }
     }
 
     public Prestamo obtenerPrestamo(long numero) throws BibliotecaException {

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/** Prestamos guardados en la tabla prestamo de PostgreSQL. */
+/** Prestamos guardados en la tabla prestamo (H2 local o PostgreSQL). */
 public class PrestamoRepositorio {
 
     private static final String SELECT = "SELECT numero, cedula, codigo_material, fecha_prestamo,"
@@ -22,6 +22,10 @@ public class PrestamoRepositorio {
             + " fecha_vencimiento, fecha_devolucion, multa, multa_pagada) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
             + " ON CONFLICT (numero) DO UPDATE SET fecha_devolucion = EXCLUDED.fecha_devolucion,"
             + " multa = EXCLUDED.multa, multa_pagada = EXCLUDED.multa_pagada";
+
+    /** Equivalente de UPSERT para la base local H2. */
+    private static final String MERGE_H2 = "MERGE INTO prestamo (numero, cedula, codigo_material, fecha_prestamo, fecha_vencimiento,"
+            + " fecha_devolucion, multa, multa_pagada) KEY (numero) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final ConexionBD bd;
 
@@ -55,7 +59,7 @@ public class PrestamoRepositorio {
     public void guardarTodos(Collection<Prestamo> prestamos) throws IOException {
         try (Connection c = bd.abrir()) {
             c.setAutoCommit(false);
-            try (PreparedStatement ps = c.prepareStatement(UPSERT)) {
+            try (PreparedStatement ps = c.prepareStatement(bd.esH2() ? MERGE_H2 : UPSERT)) {
                 for (Prestamo p : prestamos) {
                     ps.setLong(1, p.getNumero());
                     ps.setString(2, p.getCedulaUsuario());

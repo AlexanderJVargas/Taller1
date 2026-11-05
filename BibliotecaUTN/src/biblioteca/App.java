@@ -24,7 +24,7 @@ public class App {
         Locale.setDefault(Locale.US); // decimales con punto: 0.25
         Path base = carpetaDelProyecto();
         try {
-            ConexionBD bd = new ConexionBD(base.resolve("db.properties"));
+            ConexionBD bd = new ConexionBD(base);
             System.out.println("Conectando a " + bd.descripcion() + " ...");
             bd.crearEsquema();
 
@@ -37,12 +37,10 @@ public class App {
             Biblioteca biblioteca = new Biblioteca(materialRepo, usuarioRepo, prestamoRepo);
             new MenuPrincipal(biblioteca, new Consola()).iniciar();
         } catch (IOException e) {
-            salir("No se pudo leer la configuracion o importar los datos: " + e.getMessage()
-                    + "\nCree db.properties a partir de db.properties.example o defina la variable "
-                    + ConexionBD.VARIABLE_ENTORNO + ".");
+            salir("No se pudo preparar la base de datos o importar los datos: " + e.getMessage());
         } catch (SQLException e) {
-            salir("No se pudo conectar a PostgreSQL: " + e.getMessage()
-                    + "\nRevise que el servidor este encendido y los datos de db.properties.");
+            salir("No se pudo abrir la base de datos: " + e.getMessage()
+                    + "\nSi el programa ya esta abierto en otra ventana, cierrelo e intente de nuevo.");
         } catch (BibliotecaException e) {
             salir("No se pudo iniciar la aplicacion: " + e.getMessage());
         }
@@ -59,12 +57,12 @@ public class App {
     }
 
     /**
-     * Carpeta donde estan db.properties y datos/. Normalmente es la carpeta actual; si se ejecuta
+     * Carpeta donde estan datos/ y basedatos/. Normalmente es la carpeta actual; si se ejecuta
      * desde un IDE abierto en la carpeta del repositorio del grupo, se usa la subcarpeta BibliotecaUTN.
      */
     private static Path carpetaDelProyecto() {
         Path actual = Path.of("");
-        if (Files.exists(actual.resolve("db.properties")) || Files.isDirectory(actual.resolve("src/biblioteca"))) {
+        if (Files.isDirectory(actual.resolve("datos")) || Files.isDirectory(actual.resolve("src/biblioteca"))) {
             return actual;
         }
         Path subcarpeta = actual.resolve("BibliotecaUTN");

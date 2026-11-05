@@ -3,7 +3,10 @@ out/
 *.class
 fuentes.txt
 
-# Configuracion local con la contrasena de PostgreSQL
+# Base de datos local H2: cada computadora tiene la suya y se crea sola al iniciar
+basedatos/
+
+# Configuracion opcional de PostgreSQL (tiene contrasena)
 db.properties
 
 # Temporales de Word

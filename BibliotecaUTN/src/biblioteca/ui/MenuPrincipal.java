@@ -252,7 +252,7 @@ public class MenuPrincipal {
         long numero = consola.leerEntero("Numero de prestamo a devolver: ", 1);
         LocalDate fecha = consola.leerFecha("Fecha de devolucion", LocalDate.now());
 
-        Prestamo p = biblioteca.devolver(numero, fecha);
+        Prestamo p = biblioteca.devolver(u.getCedula(), numero, fecha);
         System.out.println("\nDevolucion registrada.");
         if (p.getMulta().signum() > 0) {
             System.out.println("Retraso de " + p.diasRetraso(fecha) + " dias. Multa generada: $" + p.getMulta());

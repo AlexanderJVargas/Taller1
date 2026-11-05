@@ -8,12 +8,6 @@ if errorlevel 1 (
     pause & exit /b 1
 )
 
-if not exist db.properties if "%BIBLIO_DB_URL%"=="" (
-    echo Falta el archivo db.properties con los datos de la base de datos.
-    echo Copie db.properties.example como db.properties y complete la conexion.
-    pause & exit /b 1
-)
-
 if not exist out mkdir out
 rem Lista de fuentes entre comillas y con "/" para que funcione aunque la ruta tenga espacios
 (for /r src %%f in (*.java) do (
@@ -26,5 +20,5 @@ javac --release 17 -encoding UTF-8 -d out @fuentes.txt
 if errorlevel 1 (del fuentes.txt & pause & exit /b 1)
 del fuentes.txt
 
-java -cp "out;lib\postgresql-42.7.12.jar" biblioteca.App
+java -cp "out;lib\h2-2.3.232.jar;lib\postgresql-42.7.12.jar" biblioteca.App
 pause

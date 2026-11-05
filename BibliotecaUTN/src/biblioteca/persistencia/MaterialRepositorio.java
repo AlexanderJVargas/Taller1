@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/** Materiales guardados en la tabla material de PostgreSQL. */
+/** Materiales guardados en la tabla material (H2 local o PostgreSQL). */
 public class MaterialRepositorio {
 
     private static final String SELECT =
@@ -22,6 +22,9 @@ public class MaterialRepositorio {
             "INSERT INTO material (codigo, tipo, titulo, ejemplares, especifico) VALUES (?, ?, ?, ?, ?)"
             + " ON CONFLICT (codigo) DO UPDATE SET tipo = EXCLUDED.tipo, titulo = EXCLUDED.titulo,"
             + " ejemplares = EXCLUDED.ejemplares, especifico = EXCLUDED.especifico";
+
+    /** Equivalente de UPSERT para la base local H2. */
+    private static final String MERGE_H2 = "MERGE INTO material (codigo, tipo, titulo, ejemplares, especifico) KEY (codigo) VALUES (?, ?, ?, ?, ?)";
 
     private final ConexionBD bd;
 
@@ -57,7 +60,7 @@ public class MaterialRepositorio {
     public void guardarTodos(Collection<Material> materiales) throws IOException {
         try (Connection c = bd.abrir()) {
             c.setAutoCommit(false);
-            try (PreparedStatement ps = c.prepareStatement(UPSERT)) {
+            try (PreparedStatement ps = c.prepareStatement(bd.esH2() ? MERGE_H2 : UPSERT)) {
                 for (Material m : materiales) {
                     ps.setString(1, m.getCodigo());
                     ps.setString(2, m.getTipo());

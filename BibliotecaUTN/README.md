@@ -5,47 +5,46 @@ Aplicacion de consola en Java (17 o superior) para controlar los prestamos de li
 ## Como iniciar el programa
 El programa arranca desde la clase **`src/biblioteca/App.java`** (metodo `main`).
 
-Requisitos: Java 17 o superior (JDK) y una base PostgreSQL, en la nube (Neon) o local.
-
-### Paso previo (una sola vez)
-Copie `db.properties.example` como `db.properties` y complete la conexion a la base
-(ver la seccion "Base de datos"). Sin ese archivo el programa no puede conectarse.
+Requisito: solo Java 17 o superior (JDK). No hay que instalar ni configurar ninguna base de datos:
+la base se crea sola la primera vez que se ejecuta el programa (ver "Base de datos").
 
 ### Opcion 1: desde App.java en VS Code (recomendado)
-1. Abra en VS Code la carpeta `BibliotecaUTN` (la que contiene `src`, `lib` y `db.properties`).
+1. Abra en VS Code la carpeta `BibliotecaUTN` (la que contiene `src`, `lib` y `datos`).
    Necesita la extension "Extension Pack for Java".
 2. Abra `src/biblioteca/App.java`.
 3. Pulse **Run** sobre el metodo `main` (o F5 y elija "Biblioteca UTN").
 4. El menu aparece en la **terminal** de VS Code; escriba ahi las opciones.
 
-La carpeta `.vscode` ya configura el driver `lib/postgresql-42.7.12.jar` y la terminal para el menu.
-En IntelliJ IDEA o NetBeans: agregue `lib/postgresql-42.7.12.jar` como libreria del proyecto,
+La carpeta `.vscode` ya configura los drivers de la carpeta `lib` y la terminal para el menu.
+En IntelliJ IDEA o NetBeans: agregue los `.jar` de la carpeta `lib` como librerias del proyecto,
 marque `src` como carpeta de fuentes, use la carpeta `BibliotecaUTN` como directorio de trabajo
 y ejecute `biblioteca.App`.
 
 ### Opcion 2: ejecutar.bat (Windows)
-Doble clic en `ejecutar.bat`: compila el codigo y abre el menu. Avisa si falta Java o `db.properties`.
+Doble clic en `ejecutar.bat`: compila el codigo y abre el menu. Avisa si falta Java.
 
 ### Opcion 3: desde la consola
 Dentro de la carpeta `BibliotecaUTN`:
 ```
 javac --release 17 -encoding UTF-8 -d out src/biblioteca/*.java src/biblioteca/modelo/*.java src/biblioteca/persistencia/*.java src/biblioteca/servicio/*.java src/biblioteca/ui/*.java
-java -cp "out;lib/postgresql-42.7.12.jar" biblioteca.App
+java -cp "out;lib/h2-2.3.232.jar;lib/postgresql-42.7.12.jar" biblioteca.App
 ```
 En Linux o macOS use `:` en lugar de `;` en el `-cp`.
 
-## Base de datos (PostgreSQL)
-Los datos se guardan en PostgreSQL. La base principal esta en la nube, en Neon (neon.tech), asi
-que la aplicacion funciona desde cualquier computadora con internet. Tambien puede usarse una base local.
-- `db.properties`: datos de la conexion. No se sube al repositorio: copie `db.properties.example`
-  como `db.properties` y pegue la cadena de conexion de Neon
-  (`url=postgresql://usuario:contrasena@host/neondb?sslmode=require`).
-- Variable de entorno `BIBLIO_DB_URL`: si existe, se usa en lugar de `db.properties`.
-- `lib/postgresql-42.7.12.jar`: driver JDBC.
-- `sql/biblio.sql`: esquema (tablas `usuario`, `material`, `prestamo`). La aplicacion crea las
-  tablas sola al iniciar si no existen.
-- Si la base esta vacia, en el primer arranque se importan los archivos de la carpeta `datos/`
-  (`materiales.csv`, `usuarios.csv`, `prestamos.csv`). Despues ya no se usan.
+## Base de datos (H2, incluida en el proyecto)
+La base de datos es H2, un motor SQL escrito en Java (`lib/h2-2.3.232.jar`). No necesita servidor:
+se guarda como el archivo `basedatos/biblio.mv.db` dentro de la carpeta del proyecto.
+- La primera vez que se ejecuta, el programa crea la carpeta `basedatos/`, las tablas `usuario`,
+  `material` y `prestamo` (con sus claves primarias, foraneas y restricciones CHECK) e importa los
+  datos iniciales de la carpeta `datos/` (`materiales.csv`, `usuarios.csv`, `prestamos.csv`).
+- Cada computadora tiene su propia base. `basedatos/` no se sube a GitHub, asi que los datos de un
+  compañero no se mezclan con los de otro.
+- Para empezar de cero con los datos iniciales, cierre el programa y borre la carpeta `basedatos/`.
+- `sql/biblio.sql`: el esquema de las tablas, como referencia.
+
+Opcional: para usar un servidor PostgreSQL (por ejemplo, con pgAdmin) cree un archivo `db.properties`
+con `url=jdbc:postgresql://localhost:5432/Biblio`, `usuario=postgres` y `contrasena=...`. Si ese archivo
+existe, el programa se conecta a PostgreSQL en lugar de H2. No suba `db.properties` a GitHub.
 
 Los ejemplares prestados de cada titulo se calculan al iniciar a partir de los prestamos activos,
 por eso los disponibles siempre coinciden con los prestamos registrados.
@@ -76,6 +75,6 @@ por eso los disponibles siempre coinciden con los prestamos registrados.
 - `modelo`: `Material` (abstracta) -> `Libro`, `Revista`. Polimorfismo en `diasPrestamo()`
   y `multaPorDia()`. `Usuario`, `Prestamo` (devolucion, calculo de retraso y multa).
 - `persistencia`: `ConexionBD`, `MaterialRepositorio`, `UsuarioRepositorio`, `PrestamoRepositorio`
-  (PostgreSQL via JDBC) y `MaterialCsv`, `UsuarioCsv`, `PrestamoCsv` (importacion inicial).
+  (JDBC: H2 local o PostgreSQL) y `MaterialCsv`, `UsuarioCsv`, `PrestamoCsv` (importacion inicial).
 - `servicio`: `Biblioteca` (reglas de negocio y reportes), `MaterialPrestado`, `LineaAuditoria`.
 - `ui`: `Consola` (lectura validada) y `MenuPrincipal`.

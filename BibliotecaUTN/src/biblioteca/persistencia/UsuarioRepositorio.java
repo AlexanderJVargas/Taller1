@@ -11,12 +11,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/** Usuarios guardados en la tabla usuario de PostgreSQL. */
+/** Usuarios guardados en la tabla usuario (H2 local o PostgreSQL). */
 public class UsuarioRepositorio {
 
     private static final String SELECT = "SELECT cedula, nombre FROM usuario ORDER BY nombre";
     private static final String UPSERT = "INSERT INTO usuario (cedula, nombre) VALUES (?, ?)"
             + " ON CONFLICT (cedula) DO UPDATE SET nombre = EXCLUDED.nombre";
+
+    /** Equivalente de UPSERT para la base local H2. */
+    private static final String MERGE_H2 = "MERGE INTO usuario (cedula, nombre) KEY (cedula) VALUES (?, ?)";
 
     private final ConexionBD bd;
 
@@ -46,7 +49,7 @@ public class UsuarioRepositorio {
     public void guardarTodos(Collection<Usuario> usuarios) throws IOException {
         try (Connection c = bd.abrir()) {
             c.setAutoCommit(false);
-            try (PreparedStatement ps = c.prepareStatement(UPSERT)) {
+            try (PreparedStatement ps = c.prepareStatement(bd.esH2() ? MERGE_H2 : UPSERT)) {
                 for (Usuario u : usuarios) {
                     ps.setString(1, u.getCedula());
                     ps.setString(2, u.getNombre());
